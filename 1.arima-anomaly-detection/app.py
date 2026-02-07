@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.arima.model import ARIMA
+import os
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -53,7 +54,11 @@ if uploaded_file:
     df = load_data(uploaded_file)
     st.success("Custom dataset loaded!")
 else:
-    df = pd.read_csv("data/anomaly_data.csv")
+    # Use proper relative path for sample CSV
+    current_dir = os.path.dirname(__file__)
+    data_path = os.path.join(current_dir, "data/anomaly_data.csv")
+    
+    df = pd.read_csv(data_path)
     df.columns = ["ds", "y"]
     df["ds"] = pd.to_datetime(df["ds"])
     st.info("Using sample dataset")
@@ -107,10 +112,7 @@ st.pyplot(fig2)
 
 # ---------------- RESULT TABLE ----------------
 st.subheader("📋 Anomaly Records")
-
-st.dataframe(
-    df[df["anomaly"]]
-)
+st.dataframe(df[df["anomaly"]])
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
